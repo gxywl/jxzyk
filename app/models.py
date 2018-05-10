@@ -45,7 +45,7 @@ class Jxsource(db.Model):
     zyname = db.Column(db.String(64))
     filename = db.Column(db.String(64))
     uptime = db.Column(db.DateTime(), default=datetime.utcnow)
-    countd = id = db.Column(db.Integer)
+    countd = db.Column(db.Integer)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     zytype_id = db.Column(db.Integer, db.ForeignKey('zytypes.id'))
