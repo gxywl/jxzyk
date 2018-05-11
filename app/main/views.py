@@ -1,5 +1,7 @@
 # _*_ encoding: utf-8 _*_
-from flask import redirect, url_for, render_template, flash
+import os
+
+from flask import redirect, url_for, render_template, flash, send_from_directory, request, abort
 from flask_login import current_user, login_required
 from sqlalchemy import func, engine
 
@@ -9,29 +11,38 @@ from .forms import NameForm
 from . import main
 
 
+@main.route('/download/<filename>', methods=['GET'])
+@login_required
+def download(filename):
+    if request.method == "GET":
+        #if os.path.isfile(os.path.join('upload', filename)):
+        return send_from_directory('upload', filename, as_attachment=True)
+        #abort(404)
+
+
 @main.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
-    # form = NameForm()
+    form = NameForm()
     # bujuan=None
     # jxsources = Jxsource.query.filter_by(user=current_user._get_current_object()).order_by(Jxsource.outtime.desc())
     jxsources = Jxsource.query.order_by(Jxsource.uptime.desc())
     user = current_user._get_current_object()
-    # if form.validate_on_submit():
-    #     zytype = Zytype.query.get(form.typename.data)
-    #
-    #     jxsource = Jxsource(user=user, zytype=zytype, zyname=form.zyname.data)
-    #     db.session.add(jxsource)
-    #     flash('添加成功')
-    #     return redirect(url_for('.index'))
+    if form.validate_on_submit():
+        zytype = Zytype.query.get(form.zytype.data)
+
+        jxsource = Jxsource(user=user, zytype=zytype, zyname=form.zyname.data)
+        db.session.add(jxsource)
+        flash('添加成功')
+        return redirect(url_for('.index'))
 
     # 管理账号转到管理页
     if user.isadm:
         return redirect(url_for('main.count'))
     else:
         # 一般用户转转到首页..
-        #return render_template('index.html', form=form, jxsources=jxsources)
-        return render_template('index.html', jxsources=jxsources)
+        return render_template('index.html', form=form, jxsources=jxsources)
+        # return render_template('index.html', jxsources=jxsources)
 
 #
 # @main.route('/list')

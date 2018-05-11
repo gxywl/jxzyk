@@ -9,9 +9,9 @@
         <p>参考资源</p>
     </div>
 
-{#    <div>#}
-{#        {{ wtf.quick_form(form) }}#}
-{#    </div>#}
+    <div>
+        {{ wtf.quick_form(form) }}
+    </div>
 
 
 <table class="table">
@@ -20,7 +20,7 @@
       <th>类型</th>
       <th>名称</th>
       <!--th>日期</th-->
-      <th>经过</th>
+      <th>时间</th>
     </tr>
   </thead>
   <tbody>
@@ -28,10 +28,13 @@
     {% for jxsource in jxsources %}
     <tr>
       <td>{{ jxsource.zytype.typename }}</td>
-      <td>{{ jxsource.zyname }}</td>
+      <td>
+          <a href="{{ url_for('.download',filename=jxsource.filename) }}">
+          {{ jxsource.zyname }}
+          </a>
+      </td>
       <!--td>{{ moment(jxsource.uptime).format('YY年M月D日') }}</td-->
       <td>{{ moment(jxsource.uptime).fromNow(refresh=True) }}{% if loop.first %}<!--span class="badge">新</span-->{% endif %}</td>
-
     </tr>
 
     {% endfor %}
