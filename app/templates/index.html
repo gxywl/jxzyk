@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
+{#{% import "bootstrap/wtf.html" as wtf %}#}
 
 {% block title %} To-Do {% endblock %}
 
@@ -9,16 +9,17 @@
         <p>参考资源</p>
     </div>
 
-    <div>
-        {{ wtf.quick_form(form) }}
-    </div>
-
+{#    <div>#}
+{#        {{ wtf.quick_form(form) }}#}
+{#    </div>#}
+<a href="{{ url_for('.upload') }}" class="btn btn-success">我要上传</a>
 
 <table class="table">
   <thead>
     <tr>
       <th>类型</th>
       <th>名称</th>
+      <th>物理文件</th>
       <!--th>日期</th-->
       <th>时间</th>
     </tr>
@@ -33,6 +34,7 @@
           {{ jxsource.zyname }}
           </a>
       </td>
+        <td>{{ jxsource.filename }}</td>
       <!--td>{{ moment(jxsource.uptime).format('YY年M月D日') }}</td-->
       <td>{{ moment(jxsource.uptime).fromNow(refresh=True) }}{% if loop.first %}<!--span class="badge">新</span-->{% endif %}</td>
     </tr>
