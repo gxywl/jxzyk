@@ -19,9 +19,12 @@
     <tr>
       <th>类型</th>
       <th>名称</th>
-      <th>物理文件</th>
+      <th>扩展名</th>
+      <th>上传者</th>
       <!--th>日期</th-->
       <th>时间</th>
+{#        <th>下载次数</th>#}
+        <th>操作</th>
     </tr>
   </thead>
   <tbody>
@@ -30,13 +33,21 @@
     <tr>
       <td>{{ jxsource.zytype.typename }}</td>
       <td>
-          <a href="{{ url_for('.download',filename=jxsource.filename) }}">
-          {{ jxsource.zyname }}
+          <a href="{{ url_for('.download',zyid=jxsource.id) }}">
+             <img src="{{ url_for('static', filename='favicon.ico') }}">
+            {{ jxsource.zyname }}
           </a>
       </td>
-        <td>{{ jxsource.filename }}</td>
-      <!--td>{{ moment(jxsource.uptime).format('YY年M月D日') }}</td-->
+        <td>{{ jxsource.ext }}</td>
+        <td>{{ jxsource.user.username }}</td>
+      <!--td>{{ moment(jxsource.uptime).format('LLL') }}</td-->
       <td>{{ moment(jxsource.uptime).fromNow(refresh=True) }}{% if loop.first %}<!--span class="badge">新</span-->{% endif %}</td>
+{#<td>{{ jxsource.countd }}</td>#}
+        <td>
+            {% if  jxsource.user == current_user %}
+            <a href="{{ url_for('.delete',zyid=jxsource.id) }}"  class="btn btn-danger"> 删除 </a>
+            {% endif %}
+        </td>
     </tr>
 
     {% endfor %}

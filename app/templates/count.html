@@ -6,52 +6,92 @@
 {% block page_content %}
     <div class="page-header">
     <h3>{{ current_user.username }}</h3>
-        <p>心怀众生</p>
+        <p>管理</p>
     </div>
-
-
-
 <table class="table">
   <thead>
     <tr>
-      <th>项目</th>
-      <th>金额</th>
-
+      <th>类型</th>
+      <th>名称</th>
+      <th>扩展名</th>
+      <th>上传者</th>
+      <!--th>日期</th-->
+      <th>时间</th>
+{#      <th>下载次数</th>#}
+      <th>操作</th>
     </tr>
   </thead>
   <tbody>
 
-    {% for bujuan in bujuans %}
+    {% for jxsource in jxsources %}
     <tr>
-      <td><a href="{{ url_for('main.countlist',xiangmuid= bujuan[2]) }}">{{ bujuan[0] }}</a></td>
-      <td>{{ bujuan[1] }}</td>
+      <td>{{ jxsource.zytype.typename }}</td>
+      <td>
+{#          <a href="{{ url_for('.download',filename=jxsource.filename) }}">#}
+          <a href="{{ url_for('.download',zyid=jxsource.id) }}">
+             <img src="{{ url_for('static', filename='favicon.ico') }}">
+            {{ jxsource.zyname }}
+          </a>
+      </td>
+        <td>{{ jxsource.ext }}</td>
+        <td>{{ jxsource.user.username }}</td>
+      <!--td>{{ moment(jxsource.uptime).format('YY年M月D日') }}</td-->
+      <td>{{ moment(jxsource.uptime).fromNow(refresh=True) }}{% if loop.first %}<!--span class="badge">新</span-->{% endif %}</td>
+
+{#        <td>{{ jxsource.countd }}</td>#}
+        <td>
+{#            {% if  jxsource.user == current_user %}#}
+            <a href="{{ url_for('.delete',zyid=jxsource.id) }}"  class="btn btn-danger"> 删除 </a>
+{#            {% endif %}#}
+        </td>
     </tr>
+
     {% endfor %}
-    <tr>
-      <td class="text-right">总计</td>
-      <td>( {{ alls[0][0] }} )</td>
-    </tr>
   </tbody>
 </table>
 
-<!--table class="table">
-  <thead>
-    <tr>
-      <th>项目</th>
-      <th>用户</th>
-      <th>金额</th>
-    </tr>
-  </thead>
-  <tbody>
+{#<table class="table">#}
+{#  <thead>#}
+{#    <tr>#}
+{#      <th>项目</th>#}
+{#      <th>金额</th>#}
+{##}
+{#    </tr>#}
+{#  </thead>#}
+{#  <tbody>#}
+{##}
+{#    {% for bujuan in bujuans %}#}
+{#    <tr>#}
+{#      <td><a href="{{ url_for('main.countlist',xiangmuid= bujuan[2]) }}">{{ bujuan[0] }}</a></td>#}
+{#      <td>{{ bujuan[1] }}</td>#}
+{#    </tr>#}
+{#    {% endfor %}#}
+{#    <tr>#}
+{#      <td class="text-right">总计</td>#}
+{#      <td>( {{ alls[0][0] }} )</td>#}
+{#    </tr>#}
+{#  </tbody>#}
+{#</table>#}
+{##}
+{#<!--table class="table">#}
+{#  <thead>#}
+{#    <tr>#}
+{#      <th>项目</th>#}
+{#      <th>用户</th>#}
+{#      <th>金额</th>#}
+{#    </tr>#}
+{#  </thead>#}
+{#  <tbody>#}
+{##}
+{#    {% for countbujuanbyuser in countbujuanbyusers %}#}
+{#    <tr>#}
+{#      <td>{{ countbujuanbyuser[0] }}</td>#}
+{#      <td>{{ countbujuanbyuser[1] }}</td>#}
+{#      <td>{{ countbujuanbyuser[2] }}</td>#}
+{#    </tr>#}
+{#    {% endfor %}#}
+{##}
+{#  </tbody>#}
+{#</table-->#}
 
-    {% for countbujuanbyuser in countbujuanbyusers %}
-    <tr>
-      <td>{{ countbujuanbyuser[0] }}</td>
-      <td>{{ countbujuanbyuser[1] }}</td>
-      <td>{{ countbujuanbyuser[2] }}</td>
-    </tr>
-    {% endfor %}
-
-  </tbody>
-</table-->
 {% endblock %}

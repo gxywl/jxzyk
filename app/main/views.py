@@ -14,13 +14,41 @@ from .forms import NameForm
 from . import main
 
 
-@main.route('/download/<filename>', methods=['GET'])
+# @main.route('/download/<filename>', methods=['GET'])
+# @login_required
+# def download(filename):
+#     if request.method == "GET":
+#         # if os.path.isfile(os.path.join('upload', filename)):
+#         return send_from_directory('upload', filename, as_attachment=True)
+#         # abort(404)
+
+
+@main.route('/download/<int:zyid>', methods=['GET'])
 @login_required
-def download(filename):
-    if request.method == "GET":
-        # if os.path.isfile(os.path.join('upload', filename)):
-        return send_from_directory('upload', filename, as_attachment=True)
-        # abort(404)
+def download(zyid):
+
+    jxsource = Jxsource.query.get_or_404(zyid)
+    filename = jxsource.filename
+    # # jxsource.countd=int(jxsource.countd) + 1
+    # # jxsource.countd += 1
+    # cc = int(jxsource.countd)
+    # cc += 1
+    # db.session.query(Jxsource).get(zyid).update({'countd': cc})
+    # #
+    # # jxsource.countd = 8
+    #
+    # # Jxsource.query.filter_by(id=zyid).update({'countd': cc})
+    #
+    #
+    # # db.session.add(jxsource)
+    #
+    # db.session.commit()
+    #
+    # # return jxsource.countd
+    #
+    # # if os.path.isfile(os.path.join('upload', filename)):
+    return send_from_directory('uploadb', filename, as_attachment=True) #
+    # abort(404)
 
 
 @main.route('/upload', methods=['GET', 'POST'])
@@ -54,28 +82,70 @@ def upload():
 
         tmpstr = current_user.username + str(nowTime())
 
-        tmpstr = tmpstr.encode("utf-8")
+        #tmpstr = tmpstr.encode("utf-8")
         md5filename = hashlib.md5()
         #md5filename.update(tmpstr)
 
         md5filename.update(tmpstr.encode('utf-8'))
 
 
-        savefilename = md5filename[:15] + ext  # uploaded_file.filename
+        #savefilename = md5filename[:15] + ext  # uploaded_file.filename
+        savefilename = '%s%s' % (md5filename.hexdigest()[:15], ext)
 
         fullsavefilename = os.path.join(uploaddir, savefilename)
         uploaded_file.save(fullsavefilename)
 
-        jxsource = Jxsource(user=user, zytype=zytype, zyname=zyname, filename=savefilename)
+        jxsource = Jxsource(user=user, zytype=zytype, zyname=zyname, filename=savefilename, ext=ext)
 
         # jxsource = Jxsource(user=user, zytype=zytype, zyname=zyname, filename='temp')
 
         db.session.add(jxsource)
+        db.session.commit()
+
         flash('上传成功')
         return redirect(url_for('.index'))
     else:
         return render_template('upload.html', form=form, jxsources=jxsources)
 
+
+@main.route('/delete/<int:zyid>', methods=['GET'])
+@login_required
+def delete(zyid):
+    # jxsources = Jxsource.query.filter_by(user=current_user._get_current_object()).order_by(Jxsource.outtime.desc())
+
+    jxsource = Jxsource.query.get_or_404(zyid)
+
+    user = current_user._get_current_object()
+    if user == jxsource.user or user.isadm:
+
+        filename = jxsource.filename
+
+
+        user = current_user._get_current_object()
+
+        # filename = os.path.join(app.config['UPLOAD_FOLDER'], uploaded_file.filename)
+        # filename = os.path.join('upload', uploaded_file.filename)
+
+        # uploaddir = os.path.join(os.path.dirname(__file__), 'static', 'upload')
+        pdir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        # uploaddir = os.path.join(os.path.dirname(__file__), 'static', 'upload')
+        uploaddir = os.path.join(pdir, 'upload')
+
+        fullsavefilename = os.path.join(uploaddir, filename)
+
+        if os.path.exists(fullsavefilename):
+            # 删除文件，可使用以下两种方法。
+            os.remove(fullsavefilename)
+
+        #uploaded_file.save(fullsavefilename)
+
+        db.session.delete(jxsource)
+        #db.session.add(jxsource)
+        flash('删除成功')
+        return redirect(url_for('.index'))
+    else:
+        flash('你没有删除权限')
+        return redirect(url_for('.index'))
 
 @main.route('/', methods=['GET'])
 @login_required
@@ -110,22 +180,27 @@ def index():
 # @main.route('/user/<username>')
 # def user(username):
 
-# @main.route('/count')
-# @login_required
-# def count():
-#
-#     countbujuans = db.session.query(Xiangmu.xiangmu, db.func.sum(Bujuan.jine),Xiangmu.id).join(Bujuan).group_by(
-#         Xiangmu.xiangmu).all()
-#
-#
-#     alls = db.session.query(db.func.sum(Bujuan.jine)).all()
-#
-#
-#     countbujuanbyusers = db.session.query(Xiangmu.xiangmu, User.username,db.func.sum(Bujuan.jine)).join(Bujuan).join(User).group_by(
-#         Xiangmu.xiangmu, Bujuan.user).all()
-#
-#     return render_template('count.html', bujuans=countbujuans, alls=alls,countbujuanbyusers=countbujuanbyusers)
-#
+@main.route('/count')
+@login_required
+def count():
+
+    # countbujuans = db.session.query(Xiangmu.xiangmu, db.func.sum(Bujuan.jine),Xiangmu.id).join(Bujuan).group_by(
+    #     Xiangmu.xiangmu).all()
+    #
+    #
+    # alls = db.session.query(db.func.sum(Bujuan.jine)).all()
+    #
+    #
+    # countbujuanbyusers = db.session.query(Xiangmu.xiangmu, User.username,db.func.sum(Bujuan.jine)).join(Bujuan).join(User).group_by(
+    #     Xiangmu.xiangmu, Bujuan.user).all()
+    #
+    # return render_template('count.html', bujuans=countbujuans, alls=alls,countbujuanbyusers=countbujuanbyusers)
+
+    jxsources = Jxsource.query.order_by(Jxsource.uptime.desc())
+    user = current_user._get_current_object()
+
+    return render_template('count.html', jxsources=jxsources)
+
 # @main.route('/countlist/<int:xiangmuid>')
 # @login_required
 # def countlist(xiangmuid):

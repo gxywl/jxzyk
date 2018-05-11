@@ -44,7 +44,9 @@ class Jxsource(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     zyname = db.Column(db.String(64))
     filename = db.Column(db.String(64))
+    ext = db.Column(db.String(64))
     uptime = db.Column(db.DateTime(), default=datetime.utcnow)
+    # uptime = db.Column(db.DateTime(), default=datetime.now)
     countd = db.Column(db.Integer, default=0)
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))

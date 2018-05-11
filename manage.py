@@ -108,7 +108,7 @@ for model in models:
 
 
 def make_shell_context():
-    return dict(db=db, User=User, Xiangmu=Xiangmu, Bujuan=Bujuan)
+    return dict(db=db, User=User, Jxsource=Jxsource, Zytype=Zytype)
 
 
 manager.add_command('shell', Shell(make_context=make_shell_context))

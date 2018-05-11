@@ -12,6 +12,8 @@ class Config:
 
     BABEL_DEFAULT_LOCALE = 'zh_CN'
 
+    SQLALCHEMY_ECHO = True
+
     @staticmethod
     def init_app(app):
         pass
