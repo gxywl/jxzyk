@@ -11,7 +11,7 @@ class NameForm(FlaskForm):
     uploadfile = FileField('选择文件', validators=[DataRequired()])
     zytype = SelectField('资源类型', validators=[DataRequired()], coerce=int)
     zyname = StringField("资源名称", validators=[DataRequired()])
-    submit = SubmitField('记录')
+    submit = SubmitField('上传')
 
     # 在构造化Form实例时指定selectField的choices内容,
     def __init__(self, *args, **kwargs):
