@@ -29,8 +29,9 @@ def download(zyid):
 
     jxsource = Jxsource.query.get_or_404(zyid)
     filename = jxsource.filename
-    # # jxsource.countd=int(jxsource.countd) + 1
-    # # jxsource.countd += 1
+
+    # 是记录下载次数.. # # jxsource.countd=int(jxsource.countd) + 1
+    jxsource.countd += 1
     # cc = int(jxsource.countd)
     # cc += 1
     # db.session.query(Jxsource).get(zyid).update({'countd': cc})
@@ -40,9 +41,10 @@ def download(zyid):
     # # Jxsource.query.filter_by(id=zyid).update({'countd': cc})
     #
     #
-    # # db.session.add(jxsource)
+    db.session.add(jxsource)
     #
     # db.session.commit()
+
     #
     # # return jxsource.countd
     #
