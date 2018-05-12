@@ -49,7 +49,7 @@ def download(zyid):
     # # return jxsource.countd
     #
     # # if os.path.isfile(os.path.join('upload', filename)):
-    return send_from_directory('uploadb', filename, as_attachment=True) #
+    return send_from_directory('upload', filename, as_attachment=True) #
     # abort(404)
 
 
